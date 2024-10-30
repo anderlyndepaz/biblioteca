@@ -285,10 +285,12 @@ backButton.addEventListener('click', () => {
 // Llamada inicial para cargar las categorías
 document.addEventListener('DOMContentLoaded', () => {
     renderHeaderImage();
-    
-    loader.style.display = 'block'; // Muestra el loader
+
+    const loader = document.getElementById('loader'); // Asegúrate de que estás seleccionando el loader
+    loader.style.display = 'flex'; // Muestra el loader
+
     setTimeout(() => {
-        loader.style.display = 'none'; // Oculta el loader después de 10 segundos
+        loader.style.display = 'none'; // Oculta el loader después de 5 segundos
         renderCategories(); // Carga las categorías después de ocultar el loader
     }, 5000); 
 });

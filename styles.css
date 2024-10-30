@@ -21,18 +21,34 @@ header {
 h1 {
     margin: 0;
 }
-
+/* Contenedor del loader */
 .loader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Usar 100vh para centrar verticalmente el loader */
+    position: fixed; /* Fija el loader en la pantalla */
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100vh; /* Altura completa de la pantalla */
+    display: flex;
+    flex-direction: column; /* Coloca el texto debajo de la imagen */
+    justify-content: center; /* Centra el contenido verticalmente */
+    align-items: center; /* Centra el contenido horizontalmente */
+    background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente */
+    z-index: 1000; 
 }
 
+/* Imagen del loader */
 .loader img {
     width: 350px; /* Ancho del GIF */
+    height: auto;
 }
+
+#loading-message {
+    margin-top: 10px; /* Espacio entre la imagen y el texto */
+    color: black; /* Color del texto, cámbialo según necesites */
+    font-size: 30px; /* Tamaño de la fuente */
+    text-align: center;
+}
+
 
 main {
     padding: 20px;
