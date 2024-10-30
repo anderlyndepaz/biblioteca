@@ -1,6 +1,8 @@
+ 
 const API_KEY = 'DENT6dhi6vGUH17jqUTR8wAOvTMXFGbe';
 const API_CATEGORIES_URL = `https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=${API_KEY}`;
 const API_LIST_URL = (listName) => `https://api.nytimes.com/svc/books/v3/lists/current/${listName}.json?api-key=${API_KEY}`;
+
 
 const loader = document.getElementById('loader'); // Cambiar a loader
 const loadingMessage = document.getElementById('loading-message');
@@ -9,6 +11,152 @@ const booksContainer = document.getElementById('books-list');
 const backButton = document.getElementById('back-button');
 const header = document.getElementById('header');
 
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCMyziRMxGneheZQiIlnbVWshf7EHlm4UQ",
+    authDomain: "demoweb-90e75.firebaseapp.com",
+    projectId: "demoweb-90e75",
+    storageBucket: "demoweb-90e75.appspot.com",
+    messagingSenderId: "104067804292",
+    appId: "1:104067804292:web:ff546f9fe163711613a6d1"
+  };
+
+  
+// Inicializar Firebase con la configuración adecuada
+firebase.initializeApp(firebaseConfig);
+
+// Inicializar Firestore
+const formdb = firebase.firestore();
+
+ 
+
+// Registro de usuario
+const signUpUser = (email, password) => {
+	firebase
+		.auth()
+		.createUserWithEmailAndPassword(email, password)
+		.then((userCredential) => {
+			let user = userCredential.user;
+			console.log(`Usuario registrado: ${user.email} ID:${user.uid}`);
+			alert(`Usuario registrado: ${user.email}`);
+
+			mApp.email = email;
+
+			alert(mApp.usuario + " y " + mApp.email)
+
+			// Guardar el nombre y el email en Firestore, usando el UID del usuario
+			createUser({
+				id: user.uid,
+				email: user.email
+			});
+		})
+		.catch((error) => {
+			console.error("Error en el registro:", error.message);
+		});
+};
+
+// Guardar usuario en Firestore
+const createUser = (user) => {
+	formdb.collection("usuario").doc(user.id).set({
+		email: user.email
+	})
+		.then(() => {
+			console.log("Usuario guardado en Firestore");
+		})
+		.catch((error) => {
+			console.error("Error al guardar el usuario en Firestore:", error);
+		});
+};
+
+// Formulario de registro
+document.getElementById('form').addEventListener('submit', (e) => {
+	e.preventDefault();
+	const email = document.getElementById('email').value;
+	const password = document.getElementById('pass').value;
+    const password2 = document.getElementById('pass2').value;
+
+	signUpUser(email, password, password2);
+});
+
+// Función de inicio de sesión
+const loginUser = (email, password) => {
+	firebase
+		.auth()
+		.signInWithEmailAndPassword(email, password)
+		.then((userCredential) => {
+			let user = userCredential.user;
+			console.log(`Usuario ha iniciado sesión: ${user.email} ID:${user.uid}`);
+			alert(`Bienvenido ${user.email}`);
+
+			// Puedes redirigir al usuario a otra página o mostrar algún mensaje adicional
+		})
+		.catch((error) => {
+			console.error("Error en el inicio de sesión:", error.message);
+			alert("Error en el inicio de sesión: " + error.message);
+		});
+};
+
+// Formulario de login
+document.getElementById('form2').addEventListener('submit', (e) => {
+	e.preventDefault();
+	const email = document.getElementById('email2').value;
+	const password = document.getElementById('pass3').value;
+
+	loginUser(email, password);
+});
+
+// Función de logout
+const logoutUser = () => {
+	firebase.auth().signOut().then(() => {
+		console.log("Usuario ha cerrado sesión");
+		alert("Has cerrado sesión correctamente");
+		// Redirigir al usuario a la página de login o página de inicio
+	}).catch((error) => {
+		console.error("Error al cerrar sesión:", error.message);
+		alert("Error al cerrar sesión: " + error.message);
+	});
+};
+
+// Escuchar el clic en el botón de logout
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+	e.preventDefault();
+	logoutUser();
+});
+
+const showRegisterFormButton = document.getElementById('showRegisterFormButton');
+const registerForm = document.getElementById('selecForm');
+
+showRegisterFormButton.addEventListener('click', () => {
+    if (registerForm.style.display === 'none' || registerForm.style.display === '') {
+        registerForm.style.display = 'block';
+        setTimeout(() => {
+            registerForm.style.opacity = '1';
+        }, 10); // Pequeño retraso para activar la transición
+    } else {
+        registerForm.style.opacity = '0';
+        setTimeout(() => {
+            registerForm.style.display = 'none';
+        }, 300); // Espera que termine la transición antes de ocultarlo
+    }
+});
+
+const showLoginFormButton = document.getElementById('showLoginFormButton');
+const authForm = document.getElementById('login');
+
+showLoginFormButton.addEventListener('click', () => {
+    if (authForm.style.display === 'none' || authForm.style.display === '') {
+        authForm.style.display = 'block';
+        setTimeout(() => {
+            authForm.style.opacity = '1';
+        }, 10); // Pequeño retraso para activar la transición
+    } else {
+        authForm.style.opacity = '0';
+        setTimeout(() => {
+            authForm.style.display = 'none';
+        }, 300); // Espera que termine la transición antes de ocultarlo
+    }
+});
+
 // Función para renderizar la imagen en el header
 function renderHeaderImage() {
     // Limpiar cualquier contenido previo
@@ -16,13 +164,15 @@ function renderHeaderImage() {
 
     // Crear un elemento de imagen
     const headerImage = document.createElement('img');
-    headerImage.src = 'assets/defaultPromoCrop.png'; 
+    headerImage.src = 'assets/freepik_br_aca8fcae-e9ef-4a8f-8e87-9c240e155f69.png'; 
     headerImage.alt = 'New York Times Best Sellers'; 
-    headerImage.style.width = '100%'; 
+    headerImage.style.width = '100%';
+    headerImage.style.height = 'auto';  
 
     // Agregar la imagen al header
     header.appendChild(headerImage);
 }
+
 
 // Función para obtener las categorías
 async function fetchCategories() {
@@ -136,11 +286,10 @@ backButton.addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     renderHeaderImage();
     
-    // Mostrar el loader por 10 segundos
     loader.style.display = 'block'; // Muestra el loader
     setTimeout(() => {
         loader.style.display = 'none'; // Oculta el loader después de 10 segundos
         renderCategories(); // Carga las categorías después de ocultar el loader
-    }, 1000); 
+    }, 5000); 
 });
 

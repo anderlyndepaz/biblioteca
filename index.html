@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca de Libros del New York Times</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <header id="header">
         <h1>Biblioteca de Libros del New York Times</h1>
         <p>Explora las listas de libros más vendidos y sus detalles.</p>
     </header>
-
+    <div id="botones">
+        <button id="showRegisterFormButton">Registrarse</button>
+        <button id="showLoginFormButton">Login</button>
+        <button id="logoutBtn">Logout</button>
+    </div>
     <div id="loader" class="loader" style="display: none;">
         <img src="assets/cat-waiting.gif" alt="Cargando...">
     </div>
     <main>
         <section>
-            <div id="forms-container">
-                <div>
-                    <h3>Formulario de Registro</h3>
-                    <form id="form1" action="#" method="POST">
+            <div id="formulario">
+                <div id="selecForm" class="container">
+                    <h3>Registro</h3>
+                    <form class="formulario-registro" id="form" action="#" method="POST">
                         <div>
                             <label for="email">Email:</label><br>
                             <input type="email" id="email" name="email" placeholder="Introduce email..."><br>
@@ -28,13 +34,17 @@
                             <input type="password" id="pass" name="pass" placeholder="Introduce password..."><br>
                             <label for="pass2">Repite Contraseña:</label><br>
                             <input type="password" id="pass2" name="pass2" placeholder="Repite password..."><br><br>
-                            <input type="submit" value="Enviar">
+                            <div class="dataForm">
+                                <button type="submit" value="" id="Envio">Registrarse</button>
+                                <p class="warnings" id="warnings"></p>
+                            </div>
+
                         </div>
                     </form>
                 </div>
 
-                <div>
-                    <h3>Formulario de Login</h3>
+                <div id="login">
+                    <h3>Login</h3>
                     <form id="form2" action="#" method="POST">
                         <div>
                             <label for="email2">Email:</label><br>
@@ -46,24 +56,16 @@
                     </form>
 
                 </div>
-                <div>
-                    <h3>Logout</h3>
-                    <div id="logout">
-                        <p id="message"></p>
-                        <button id="salir">Logout</button>
-                    </div>
-
-                </div>
             </div>
-        </section> 
-        
+        </section>
+
         <button id="back-button" style="display: none;">⬅ Volver al Index</button>
         <div id="loading-message">Cargando categorías...</div>
         <div id="categories" class="categories-container"></div>
         <div id="books-list" class="books-container" style="display: none;"></div>
     </main>
 
-     <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
@@ -73,5 +75,5 @@
 
     <script src="app.js"></script>
 </body>
-</html>
 
+</html>
